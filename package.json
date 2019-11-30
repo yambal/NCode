@@ -1,11 +1,11 @@
 {
   "name": "jp-ncode",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "N-Code",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "ava -v",
     "dev": "ts-node src/index.ts",
     "dev:watch": "ts-node-dev --respawn src/index.ts",
     "clean": "rimraf dist/*",
@@ -25,6 +25,7 @@
   "homepage": "https://github.com/yambal/NCode#readme",
   "devDependencies": {
     "@types/node": "^12.12.14",
+    "ava": "^2.4.0",
     "npm-run-all": "^4.1.5",
     "rimraf": "^3.0.0",
     "ts-node": "^8.5.4",

@@ -1,5 +1,7 @@
-const NCode = () => {
-    return 'Hello'
+const NCode = {
+  getNCode: (lat: number, lng: number):string => {
+    return lat + ',' + lng
+  }
 }
 
-export default NCode
+module.exports = NCode;

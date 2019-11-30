@@ -1,7 +1,8 @@
 "use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const NCode = () => {
-    return 'Hello';
+const NCode = {
+    getNCode: (lat, lng) => {
+        return lat + ',' + lng;
+    }
 };
-exports.default = NCode;
+module.exports = NCode;
 //# sourceMappingURL=index.js.map
