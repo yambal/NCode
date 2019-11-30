@@ -1,6 +1,7 @@
 "use strict";
-const Ncode = () => {
+Object.defineProperty(exports, "__esModule", { value: true });
+const NCode = () => {
     return 'Hello';
 };
-console.log(Ncode());
+exports.default = NCode;
 //# sourceMappingURL=index.js.map
