@@ -1,6 +1,6 @@
 {
   "name": "jp-ncode",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "N-Code",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
