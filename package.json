@@ -1,0 +1,33 @@
+{
+  "name": "ncode",
+  "version": "0.0.1",
+  "description": "N-Code",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "ts-node src/index.ts",
+    "dev:watch": "ts-node-dev --respawn src/index.ts",
+    "clean": "rimraf dist/*",
+    "tsc": "tsc",
+    "build": "npm-run-all clean tsc",
+    "start": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yambal/NCode.git"
+  },
+  "author": "June YAMAMOTO <jy@yambal.net> (https://www.yambal.net/)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yambal/NCode/issues"
+  },
+  "homepage": "https://github.com/yambal/NCode#readme",
+  "devDependencies": {
+    "@types/node": "^12.12.14",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^3.0.0",
+    "ts-node": "^8.5.4",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "typescript": "^3.7.2"
+  }
+}
