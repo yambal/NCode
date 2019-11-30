@@ -1,13 +1,3 @@
-// Type definitions for abs 1.3
-// Project: https://github.com/ionicabizau/abs
-// Definitions by: Aya Morisawa <https://github.com/AyaMorisawa>
-// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
-
-/**
- * Compute the absolute path of an input.
- * @param input The input path.
- */
-declare module 'NCode' {
-    getNCode: (lat: number, lng:numbar) => string
+declare module 'jp-ncode' {
+  function getNCode(lat: number, lng:numbar):string
 }
-module.export = NCode;
