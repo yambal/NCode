@@ -7,5 +7,5 @@
  * Compute the absolute path of an input.
  * @param input The input path.
  */
-declare function NCode(input: string): string;
+declare function NCode(lat: number, lng:numbar): string;
 export = NCode;
