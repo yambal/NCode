@@ -1,6 +1,6 @@
 {
   "name": "jp-ncode",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "N-Code",
   "main": "dist/index.js",
   "scripts": {
