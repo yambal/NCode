@@ -1,4 +1,20 @@
-const nCode_NS_Blocks = [
+type NCodeUnit = {
+  name: string
+  min: number
+  max: number
+}
+
+type NCodeBlock = {
+  name: string
+  min: number
+  max: number
+  center?: number
+  units : NCodeUnit[]
+}
+
+type NCodeBlocks = NCodeBlock[]
+
+const nCode_NS_Blocks: NCodeBlocks = [
   {
     name:"X",
     min:66.508333333333,
@@ -536,7 +552,7 @@ const nCode_NS_Blocks = [
   }
 ];
 
-const nCode_EW_Blocks = [
+const nCode_EW_Blocks: NCodeBlocks = [
   {
     name:"1",
     min:170,
@@ -1195,28 +1211,23 @@ interface block {
   latMax: number
   lngMin: number
   lngMax: number
-  unit: any
+  unit?: any
 }
 
-interface getBlockUnitResult {
-  block?: block,
-  lat: number,
+interface iBlockAndUnit {
+  block: block
+  lat: number
   lng: number
 }
 
-const getBlockUnit = (lat: number, lng: number) => {
-  let res:getBlockUnitResult = {
-    lat: lat,
-    lng: lng
-  }
-
+const getBlockAndUnit = (lat: number, lng: number):iBlockAndUnit | null => {
   // -------------------------------------------------------
   // Block
   // 南北ブロック
-  var nsBlock = null;
-  var nsBlocks = nCode_NS_Blocks.filter(function(element, index, array){
-    var max = element.max;
-    var min = element.min;
+  let nsBlock: NCodeBlock | null = null;
+  const nsBlocks: NCodeBlocks = nCode_NS_Blocks.filter(function(element, index, array){
+    const max = element.max;
+    const min = element.min;
     if(lat >= min && lat < max){
       return true;
     };
@@ -1227,10 +1238,10 @@ const getBlockUnit = (lat: number, lng: number) => {
   }
 
   // 東西ブロック
-  var ewBlock = null;
-  var ewBlocks = nCode_EW_Blocks.filter(function(element, index, array){
-    var max = element.max;
-    var min = element.min;
+  let ewBlock: NCodeBlock | null = null;
+  const ewBlocks: NCodeBlocks = nCode_EW_Blocks.filter(function(element, index, array){
+    const max = element.max;
+    const min = element.min;
 
     // 180度跨ぎ
     if(min > max){
@@ -1252,14 +1263,27 @@ const getBlockUnit = (lat: number, lng: number) => {
     ewBlock = ewBlocks[0];
   }
 
+  if(!nsBlock || !ewBlock){
+    return null
+  }
+
+  const block:block = {
+    name:ewBlock.name + nsBlock.name,
+    latMin:nsBlock.min,
+    latMax:nsBlock.max,
+    lngMin:ewBlock.min,
+    lngMax:ewBlock.max,
+    unit:null
+  }
+
   // -------------------------------------------------------
   // Unit
   // 南北ユニット
-  var nsUnit = null;
+  let nsUnit: NCodeUnit | null = null;
   if(nsBlock){
-    var nsUnits = nsBlock.units.filter(function(element, index, array){
-      var min = element.min;
-      var max = element.max;
+    const nsUnits = nsBlock.units.filter(function(element, index, array){
+      const min = element.min;
+      const max = element.max;
       if(lat >= min && lat < max){
         return true;
       };
@@ -1271,11 +1295,11 @@ const getBlockUnit = (lat: number, lng: number) => {
   }
 
   // 南北ユニット
-  var ewUnit = null;
+  let ewUnit: NCodeUnit | null = null;
   if(ewBlock){
-    var ewUnits = ewBlock.units.filter(function(element, index, array){
-      var min = element.min;
-      var max = element.max;
+    const ewUnits = ewBlock.units.filter(function(element, index, array){
+      const min = element.min;
+      const max = element.max;
       if(lng >= min && lng < max){
         return true;
       };
@@ -1286,19 +1310,8 @@ const getBlockUnit = (lat: number, lng: number) => {
     }
   }
 
-  if(nsBlock && ewBlock){
-    res.block = {
-      name:ewBlock.name + nsBlock.name,
-      latMin:nsBlock.min,
-      latMax:nsBlock.max,
-      lngMin:ewBlock.min,
-      lngMax:ewBlock.max,
-      unit:null
-    }
-  };
-
-  if(nsUnit && ewUnit && res.block){
-    res.block.unit = {
+  if(nsUnit && ewUnit){
+    block.unit = {
       name:ewUnit.name + nsUnit.name,
       latMin:nsUnit.min,
       latMax:nsUnit.max,
@@ -1308,14 +1321,19 @@ const getBlockUnit = (lat: number, lng: number) => {
     }
   }
 
+  const res:iBlockAndUnit = {
+    block: block,
+    lat,
+    lng
+  }
+
   return res;
 };
 
-	/**
-	　* 指定した緯度経度範囲のなかで、緯度経度のメッシュを返す
-	 **/
+/**
+　* 指定した緯度経度範囲のなかで、緯度経度のメッシュを返す
+  **/
 const getMesh = (lat: number, lng: number, latMin: number, latMax: number, lngMin: number, lngMax: number) => {
-  console.log('getMesh', lat, lng, latMin, latMax, lngMin, lngMax)
   let res: any = {}
 
   for(var i = 0; i < 100; i++){
@@ -1329,8 +1347,6 @@ const getMesh = (lat: number, lng: number, latMin: number, latMax: number, lngMi
     }
   }
 
-  var lngMeshMin = null;
-  var lngMeshMax = null;
   for(var i = 0; i < 100; i++){
     var serchLngMin = lngMin + (lngMax - lngMin) * (i / 100);
     var serchLngMax = lngMin + (lngMax - lngMin) * ((i+1) / 100);
@@ -1351,15 +1367,15 @@ const getMesh = (lat: number, lng: number, latMin: number, latMax: number, lngMi
 /**
  * 1/110 メッシュを返す
  **/
-const getHmesh = (lat: number, lng: number) => {
-  const res = getBlockUnit(lat, lng);
-  if(!res.block){
+const getHmesh = (lat: number, lng: number): iBlockAndUnit | null => {
+  const blockAndUnit = getBlockAndUnit(lat, lng);
+  if(!blockAndUnit || !blockAndUnit.block){
     return null;
   }
-  var unit = res.block.unit;
-  var mesh = getMesh(res.lat, res.lng, unit.latMin, unit.latMax, unit.lngMin, unit.lngMax);
+  const unit = blockAndUnit.block.unit;
+  const mesh = getMesh(blockAndUnit.lat, blockAndUnit.lng, unit.latMin, unit.latMax, unit.lngMin, unit.lngMax);
   if(mesh){
-    res.block.unit.hMesh = {
+    blockAndUnit.block.unit.hMesh = {
       nsName:mesh.latName,
       ewName:mesh.lngName,
       latMin:mesh.latMin,
@@ -1370,19 +1386,18 @@ const getHmesh = (lat: number, lng: number) => {
     }
   }
 
-  //console.log("_getHmesh", res);
-  return res;
+  return blockAndUnit;
 }
   
-const getMmesh = (lat: number, lng: number) => {
-  let res = getHmesh(lat, lng);
-  if(!res || !res.block){
+const getMmesh = (lat: number, lng: number): iBlockAndUnit | null => {
+  let blockAndUnit = getHmesh(lat, lng);
+  if(!blockAndUnit || !blockAndUnit.block){
     return null;
   }
-  var hMesh = res.block.unit.hMesh;
-  var mesh = getMesh(res.lat, res.lng, hMesh.latMin, hMesh.latMax, hMesh.lngMin, hMesh.lngMax);
+  var hMesh = blockAndUnit.block.unit.hMesh;
+  var mesh = getMesh(blockAndUnit.lat, blockAndUnit.lng, hMesh.latMin, hMesh.latMax, hMesh.lngMin, hMesh.lngMax);
   if(mesh){
-    res.block.unit.hMesh.mMesh = {
+    blockAndUnit.block.unit.hMesh.mMesh = {
       nsName:mesh.latName,
       ewName:mesh.lngName,
       latMin:mesh.latMin,
@@ -1392,8 +1407,9 @@ const getMmesh = (lat: number, lng: number) => {
     }
   }
 
-  return res;
+  return blockAndUnit;
 }
+
 
 const getNCode = (lat: number, lng: number):string => {
   var blockName = null;
@@ -1407,7 +1423,6 @@ const getNCode = (lat: number, lng: number):string => {
     if(n.block.unit){
       unitName = n.block.unit.name;
 
-      //console.log("hMesh", n.block.unit.hMesh);
       if(n.block.unit.hMesh){
         ewMeshName = n.block.unit.hMesh.ewName;
         nsMeshName = n.block.unit.hMesh.nsName;
@@ -1416,15 +1431,13 @@ const getNCode = (lat: number, lng: number):string => {
           ewMeshName += n.block.unit.hMesh.mMesh.ewName;
           nsMeshName += n.block.unit.hMesh.mMesh.nsName;
         }
-        
-
       }
     }
+  } else {
+    null
   }
 
-  console.log(blockName, unitName, ewMeshName, nsMeshName)
-  return "fin"
-  //return nCode(blockName, unitName, ewMeshName, nsMeshName);
+  return blockName+unitName+ewMeshName+nsMeshName;
 }
 
 const NCode = {
