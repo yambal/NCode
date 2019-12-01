@@ -12,6 +12,13 @@ type NCodeBlock = {
   units : NCodeUnit[]
 }
 
+type ncode = {
+  blockName: string
+  unitName: string
+  ewMeshName: string
+  nsMeshName: string
+}
+
 type NCodeBlocks = NCodeBlock[]
 
 const nCode_NS_Blocks: NCodeBlocks = [
@@ -1411,7 +1418,7 @@ const getMmesh = (lat: number, lng: number): iBlockAndUnit | null => {
 }
 
 
-const getNCode = (lat: number, lng: number):string => {
+const getNCode = (lat: number, lng: number):ncode | null => {
   var blockName = null;
   var unitName = null;
   var ewMeshName = null;
@@ -1434,14 +1441,19 @@ const getNCode = (lat: number, lng: number):string => {
       }
     }
   } else {
-    null
+    return null
   }
 
-  return blockName+unitName+ewMeshName+nsMeshName;
+  return {
+    blockName: blockName,
+    unitName: unitName,
+    ewMeshName: ewMeshName,
+    nsMeshName: nsMeshName,
+  }
 }
 
 const NCode = {
   getNCode
 }
 
-module.exports = NCode;
+export default NCode;
