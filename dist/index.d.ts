@@ -5,8 +5,8 @@ declare type ncode = {
   nsMeshName: string
 }
 
-declare const NCode: {
+declare const JPNCode: {
   getNCode(lat: number, lng:number):ncode | null
 }
 
-export default NCode;
+export default JPNCode;
