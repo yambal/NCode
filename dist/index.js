@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const nCode_NS_Blocks = [
     {
         name: "X",
@@ -1384,12 +1385,17 @@ const getNCode = (lat, lng) => {
         }
     }
     else {
-        null;
+        return null;
     }
-    return blockName + unitName + ewMeshName + nsMeshName;
+    return {
+        blockName: blockName,
+        unitName: unitName,
+        ewMeshName: ewMeshName,
+        nsMeshName: nsMeshName,
+    };
 };
-const JPNCode = {
+const NCode = {
     getNCode
 };
-module.exports = JPNCode;
+exports.default = NCode;
 //# sourceMappingURL=index.js.map
