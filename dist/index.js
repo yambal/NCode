@@ -1388,8 +1388,8 @@ const getNCode = (lat, lng) => {
     }
     return blockName + unitName + ewMeshName + nsMeshName;
 };
-const NCode = {
+const JPNCode = {
     getNCode
 };
-module.exports = NCode;
+module.exports = JPNCode;
 //# sourceMappingURL=index.js.map

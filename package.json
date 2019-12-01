@@ -1,5 +1,5 @@
 {
-  "name": "jp-ncode",
+  "name": "jpncode",
   "version": "0.0.9",
   "description": "N-Code",
   "main": "dist/index.js",
